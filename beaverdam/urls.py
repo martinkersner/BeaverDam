@@ -9,6 +9,7 @@ admin.site.site_header = 'BeaverDam'
 
 urlpatterns = [
     url(r'^$', home),
+    url(r'^search/$', search, name='search'),
     url(r'^verify/$', verify_list),
 
     url(r'^video/(\d+)/$', video, name='video'),

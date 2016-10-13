@@ -20,6 +20,18 @@ def home(request):
         'thumbnail': True,
     })
 
+def search(request):
+    if request.POST:
+        vid = request.POST["id"]
+        try:
+            video = Video.objects.get(id=vid)
+        except Video.DoesNotExist:
+            raise Http404('No video with id "{}". Possible fixes: \n1) Download an up to date DB, see README. \n2) Add this video to the DB via /admin'.format(vid))
+        if video:
+            print (Video.objects.filter(id=vid))
+            return redirect("/video/" + str(vid) + "/")
+    return render(request, 'video_search.html', {})
+
 def verify_list(request):
     need_verification = Video.objects.filter(id__gt=0, verified=False).exclude(annotation='')[:100]
     return render(request, 'video_list.html', context={
