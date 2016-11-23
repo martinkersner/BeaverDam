@@ -110,7 +110,7 @@ class Server(object):
                          "</ExternalQuestion>").format(self.localhost,
                                                        page, height)
 
-        r = self.request("CreateHIT", r);
+        r = self.request("CreateHIT", r)
         r.validate("HIT/Request/IsValid", "HIT/Request/Errors/Error/Message")
         r.store("HIT/HITId", "hitid")
         r.store("HIT/HITTypeId", "hittypeid")
