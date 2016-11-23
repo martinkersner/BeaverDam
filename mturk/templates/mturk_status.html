@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block head %}
+  <script>
+{#    not sure if all browsers support this#}
+{#    http://stackoverflow.com/questions/7958292/mimicking-sets-in-javascript#}
+    var clicked = {};
+    function trackTask(obj) {
+        if (obj.checked) {
+            var tmp = obj.value.split(",");
+            clicked[tmp[0]] = tmp[1];
+            console.log(tmp);
+        } else {
+            delete clicked[obj.value.split(",")[0]];
+        }
+    }
+    function publishTask() {
+        urlpayload = [];
+        for (var i in clicked) {
+            urlpayload.push(encodeURI(i) + "=" + encodeURI(clicked[i]))
+        }
+        console.log(urlpayload.join("&"));
+
+        xhr = new XMLHttpRequest();
+        var url = "{% url 'publish_task' %}";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status == 200) {
+                location.reload();
+            } else {
+{#                var node = document.createElement("div");#}
+{#                node.className = "alert alert-danger";#}
+{#                node.innerHTML = "Something went wrong, please check data.";#}
+{#                var tmp = document.getElementById("tools-notification");#}
+{#                tmp.appendChild(node);#}
+                console.log("something went wrong!");
+            }
+        }
+        var data = JSON.stringify(clicked);
+        xhr.send(data);
+    }
+  </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Video {{ video.id }} HIT status page</div>
+      <div class="panel-body">
+        {% if fvts or sfts %}
+            <h4> HIT's</h4>
+            <table class="table">
+            <thread>
+                <tr>
+                    <th> </th>
+                    <th>Type</th>
+                    <th>HIT ID</th>
+                    <th>HIT Group</th>
+                    <th>Completed</th>
+                    <th>Paid</th>
+                </tr>
+            </thread>
+            <tbody>
+            {% for f in fvts %}
+            <tr class="info">
+                <td><input type="checkbox" value="{{ f.id }},f" onclick="trackTask(this);"></td>
+                <td>Full Video</td>
+                <td>{{ f.hit_id }}</td>
+                <td>{{ f.hit_group }}</td>
+                <td>{% if f.time_completed %}Yes{% else %}No{% endif %}</td>
+                <td>{% if f.paid %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            {% endfor %}
+            {% for f in sfts %}
+            <tr class="warning">
+                <td><input type="checkbox" value="{{ f.id }},s" onclick="trackTask(this);"></td>
+                <td>Single Frame</td>
+                <td>{{ f.hit_id }}</td>
+                <td>{{ f.hit_group }}</td>
+                <td>{% if f.time_completed %}Yes{% else %}No{% endif %}</td>
+                <td>{% if f.paid %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-danger" role="alert">No HIT's associated with this Video</div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">HIT Tools</div>
+      <div class="panel-body">
+          <div id="tools-notification"></div>
+          <a href="{% url 'create_fvt' video.id %}" class="btn btn-info" role="button">Create FullVideoTask HIT</a>
+          <a href="#" class="btn btn-info" role="button" onclick="publishTask();">Publish Selected Tasks</a>
+      </div>
+    </div>
+{% endblock %}

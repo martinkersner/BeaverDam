@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth.views import login, logout
 from django.views.generic.base import RedirectView
@@ -15,6 +15,8 @@ urlpatterns = [
     url(r'^video/(\d+)/next/$', next_unannotated),
     url(r'^video/(\d+)/verify/$', verify),
     url(r'^annotation/(\d+)/$', AnnotationView.as_view()),
+
+    url(r'^mturk/', include('mturk.urls')),
 
     url(r'^login/$', login, 
         {'template_name': 'admin/login.html', 
