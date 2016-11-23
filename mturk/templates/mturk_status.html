@@ -15,12 +15,6 @@
         }
     }
     function publishTask() {
-        urlpayload = [];
-        for (var i in clicked) {
-            urlpayload.push(encodeURI(i) + "=" + encodeURI(clicked[i]))
-        }
-        console.log(urlpayload.join("&"));
-
         xhr = new XMLHttpRequest();
         var url = "{% url 'publish_task' %}";
         xhr.open("POST", url, true);
@@ -40,6 +34,20 @@
         }
         var data = JSON.stringify(clicked);
         xhr.send(data);
+    }
+    function createFVTTask() {
+        xhr = new XMLHttpRequest();
+        var url = "{% url 'create_fvt' video.id %}";
+        xhr.open("GET", url, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status == 200) {
+                location.reload();
+            } else {
+                console.log("something went wrong!");
+            }
+        }
+        xhr.send();
     }
   </script>
 {% endblock %}
@@ -94,7 +102,7 @@
       <div class="panel-heading">HIT Tools</div>
       <div class="panel-body">
           <div id="tools-notification"></div>
-          <a href="{% url 'create_fvt' video.id %}" class="btn btn-info" role="button">Create FullVideoTask HIT</a>
+          <a href="#" class="btn btn-info" role="button" onclick="createFVTTask();">Create FullVideoTask HIT</a>
           <a href="#" class="btn btn-info" role="button" onclick="publishTask();">Publish Selected Tasks</a>
       </div>
     </div>
