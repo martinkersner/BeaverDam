@@ -2,6 +2,37 @@
 
 {% block head %}
   <link rel="stylesheet" type="text/css" href="/static/app.css"/>
+	<script>
+	// Martin Kersner, 2016/12/22
+	function drawROI() {
+		console.log(5 + 6);
+
+		function drawLine(x1, y1, x2, y2) {
+			var color = "rgb(255,0,0)";
+			var w = 2;
+
+			var my_svg = document.getElementsByClassName("player-paper")[0].childNodes[0];
+			var l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			l.setAttribute('x1', x1);
+			l.setAttribute('y1', y1);
+			l.setAttribute('x2', x2);
+			l.setAttribute('y2', y2);
+			l.setAttribute('stroke', color);
+			l.setAttribute('stroke-width', w);
+			my_svg.appendChild(l);
+		}
+
+		var x1 = 40;
+		var x2 = x1 + 1200;
+		var y1 = 100;
+		var y2 = y1 + 370;
+
+		drawLine(x2, y1, x2, y2);
+		drawLine(x2, y1, x1, y1);
+		drawLine(x1, y2, x2, y2);
+		drawLine(x1, y1, x1, y2);
+	};
+	</script>
 
   <script>
     video = {{ video_data|safe }};
@@ -114,6 +145,7 @@
               <div class="glyphicon glyphicon-step-forward player-control-goto-end"></div>
               <div class="glyphicon glyphicon-trash player-control-delete-keyframe"></div>
               <input class="form-control player-control-time" id="frame-number" placeholder="0">
+              <span class="" onClick="drawROI()" style="cursor: pointer">ROI</span>
             </div>
           </div>
 
