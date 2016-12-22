@@ -1,0 +1,21 @@
+#!/bin/sh
+# Martin Kersner, m.kersner@gmail.com
+# 2016/12/21 
+
+COMMAND_FILE=commands.txt
+
+rm -rf $COMMAND_FILE
+touch $COMMAND_FILE
+
+echo "DELETE FROM annotator_label;" \
+		 "INSERT INTO annotator_label VALUES(1, 'Car',        'd9534f');" \
+		 "INSERT INTO annotator_label VALUES(2, 'Pedestrian', '337ab7');" \
+		 "INSERT INTO annotator_label VALUES(3, 'Cyclist',    '5cb85c');" \
+		 "INSERT INTO annotator_label VALUES(4, 'Bus',        '5bc0de');" \
+		 "INSERT INTO annotator_label VALUES(5, 'Truck',      'f0ad4e');" >> $COMMAND_FILE
+
+echo "DELETE FROM annotator_video WHERE ID > 3;" >> $COMMAND_FILE
+
+echo ".q" >> $COMMAND_FILE
+
+sqlite3 db.sqlite3 < $COMMAND_FILE

@@ -1,0 +1,22 @@
+#!/bin/sh
+# Martin Kersner, m.kersner@gmail.com
+# 2016/12/22
+
+# After you manually add video to annotator/static/videos directory run this script.
+# ./add_video /path/to/video/file.mp4
+
+VIDEO_PATH=$1
+VIDEO_ID=`basename $VIDEO_PATH | cut -d. -f 1`
+
+COMMAND_FILE=commands.txt
+
+rm -rf $COMMAND_FILE
+touch $COMMAND_FILE
+
+echo "INSERT INTO annotator_video " \
+		 "(id, annotation, source, host, filename, verified, image_list, rejected) " \
+		 "VALUES($VIDEO_ID, \"\", \"\", \"\", \"$VIDEO_PATH\", 0, \"\", 0);" >> $COMMAND_FILE
+
+echo ".q" >> $COMMAND_FILE
+
+sqlite3 db.sqlite3 < $COMMAND_FILE
