@@ -1,0 +1,8 @@
+#!/bin/bash
+# Martin Kersner, m.kersner@gmail.com
+# 2016/12/22
+
+USER_NAME=$1
+USER_PWD=$2
+
+echo "from django.contrib.auth.models import User; User.objects.create_user('$USER_NAME', '', '$USER_PWD')" | python3 manage.py shell
