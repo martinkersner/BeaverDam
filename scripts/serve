@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 cd "$(echo "$0" | xargs dirname | xargs dirname)"
 
@@ -19,4 +20,4 @@ if [ "$VIRTUAL_ENV" = "" ]; then
     exit 1
 fi
 
-verbose ./manage.py runserver "0.0.0.0:$PORT"
+verbose python3 manage.py runserver "0.0.0.0:$PORT"

@@ -13,7 +13,6 @@ if [[ "$1" != "-f" ]]; then
 fi
 
 verbose wget https://s3-us-west-2.amazonaws.com/beaverdam/db.sqlite3 -O db.sqlite3
-verbose wget https://s3-us-west-2.amazonaws.com/beaverdam/videos/test_vid2.mp4 -O annotator/static/videos/0.mp4
 
 python3 manage.py migrate
 
