@@ -25,8 +25,12 @@ class Video(models.Model):
 
     @property
     def url(self):
-        if finders.find('videos/{}.mp4'.format(self.id)):
+        if finders.find('./videos/{}.mp4'.format(self.id)):
+            print("mp4: " + str(self.id)) # TODO DELETE
             return '/static/videos/{}.mp4'.format(self.id)
+        elif finders.find('./videos/{}.mkv'.format(self.id)):
+            print("mkv: " + str(self.id)) # TODO DELETE
+            return '/static/videos/{}.mkv'.format(self.id)
         elif self.image_list:
             return 'Image List'
         elif self.filename and self.host:
