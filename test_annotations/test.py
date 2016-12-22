@@ -5,6 +5,7 @@ import sqlite3
 import ast
 import numpy
 import math
+import os
 
 def drawRectangle(frame, x, y, w, h, color=(255,255,255)):
   p1 = (int(x), int(y))
@@ -76,60 +77,81 @@ def myfun(annot, current_keyframe, frame_number):
     
   return current_keyframe, rec
 
+def getAnnotations(c):
+  c.execute('SELECT annotation  FROM annotator_video WHERE ID = 4;')
+  record = c.fetchone()
+  s_record = str(record[0][1:-1].replace("\"", "\'").replace("true", "\'true\'").replace("false", "\'false\'"))
+  return ast.literal_eval(s_record)
+
+def getColor(obj_type):
+  # TODO  set colors
+  if obj_type == "Car":
+    return (255,255,0)
+  elif obj_type == "Pedestrian":
+    return (0,255,0)
+  elif obj_type == "Cyclist":
+    return (0,255,255)
+  elif obj_type == "Bus":
+    return (255,255,255)
+  elif obj_type == "Truck":
+    return (0,0,0)
 
 ################################################################################
 db_path    = "../db.sqlite3"
-video_path = "/home/martin/DeepLearning/BeaverDam/annotator/static/videos/4.mp4"
+video_path = "/home/martin/DeepLearning/BeaverDam/annotator/static/videos/4.mp4" # TODO pass path through script parameters
 crop_output_dir = "crop_output"
+do_crop = True
 
 conn = sqlite3.connect(db_path)
 c = conn.cursor()
+db_annotations =  getAnnotations(c)
 
-c.execute('SELECT annotation  FROM annotator_video WHERE ID = 4;')
-record = c.fetchone()
-s_record = str(record[0][1:-1].replace("\"", "\'").replace("true", "\'true\'"))
-dict_record = ast.literal_eval(s_record)
-print dict_record
+annot_all = []
+for obj in db_annotations:
+  annot_tmp = {}
 
-annot = {}
-for r in dict_record['keyframes']:
-  tmp_frame_number = timeToFrameNumber(r['frame'])
-  annot[tmp_frame_number] = {'h': r['h'], 'w': r['w'], 'x': r['x'], 'y': r['y']}
+  for o in obj['keyframes']:
+    tmp_frame_number = timeToFrameNumber(o['frame'])
+    annot_tmp[tmp_frame_number] = {'h': o['h'], 'w': o['w'], 'x': o['x'], 'y': o['y'], 'type': obj['type']}
 
-keys = annot.keys()
-keys.sort()
+  keys = annot_tmp.keys()
+  keys.sort()
 
-for i,k in enumerate(keys):
-  if len(keys)-1 == i:
-      annot[k]["next_frame"] = -1
-  else:
-      annot[k]["next_frame"] = keys[i+1]
+  for i, k in enumerate(keys):
+    if len(keys)-1 == i:
+        annot_tmp[k]["next_frame"] = -1
+    else:
+        annot_tmp[k]["next_frame"] = keys[i+1]
+
+  annot_all.append(annot_tmp)
 
 # video
 cap = cv2.VideoCapture(video_path)
 frame_number = 0
-current_keyframe = 0
-color = (255,255,255)
+current_keyframe = [0]*len(annot_all)
 
 while(True):
   ret, frame = cap.read()
   clear_frame = frame.copy()
-  drawRectangle(frame, 40, 100, 1200, 370, (0,0,255))
+  drawRectangle(frame, 40, 150, 1200, 370, (0,0,255))
 
-  if annot:
-    current_keyframe, rec = myfun(annot, current_keyframe, frame_number)
+  for i, annot_tmp in enumerate(annot_all):
+    if annot_tmp:
+      current_keyframe[i], rec = myfun(annot_tmp, current_keyframe[i], frame_number)
+      obj_type = annot_tmp[0]["type"]
 
-    if rec:
-      drawRectangle(frame, rec["x"], rec["y"], rec["w"], rec["h"], color)
-      drawText(frame, "car", rec["x"], rec["y"], color)
-      cropped_frame = cropImage(clear_frame, rec["x"], rec["y"], rec["w"], rec["h"])
-      crop_output_path = crop_output_dir + str(frame_number) + ".png"
-      cv2.imwrite(crop_output_path, cropped_frame)
-    else:
-      annot = None
+      if rec:
+        drawRectangle(frame, rec["x"], rec["y"], rec["w"], rec["h"], getColor(obj_type))
+        drawText(frame, obj_type, rec["x"], rec["y"], getColor(obj_type))
+        if do_crop:
+          cropped_frame = cropImage(clear_frame, rec["x"], rec["y"], rec["w"], rec["h"])
+          crop_output_path = os.path.join(crop_output_dir, str(i) + str(frame_number) + ".png") # directory for each class
+          cv2.imwrite(crop_output_path, cropped_frame)
+      else:
+        annot_all[i] = None
 
   cv2.imshow('frame', frame)
-  if cv2.waitKey(40) & 0xFF == ord('q'):
+  if cv2.waitKey(0) & 0xFF == ord('q'):
     break
 
   frame_number += 1
