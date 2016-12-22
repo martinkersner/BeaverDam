@@ -8,7 +8,7 @@ verbose() {
 
 # This assumes video is already in H264
 
-for f in "$@" do
+for f in "$@"; do
     verbose ffmpeg \
         -i "$f" \
         -c copy \
