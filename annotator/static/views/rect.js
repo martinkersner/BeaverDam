@@ -10,8 +10,8 @@ var RectConstants = {
 
     // Minimum dimensions allowed for box
     MIN_RECT_DIMENSIONS: {
-        width: 10 /* px */,
-        height: 15 /* px */,
+        width:  40 /* px */,
+        height: 40 /* px */,
     },
 
     // Map of dragIntent => cursor
