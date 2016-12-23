@@ -97,7 +97,7 @@ def getRect(annot, current_keyframe, frame_number):
   return rec, current_keyframe
 
 def getAnnotations(c, video_id):
-  c.execute('SELECT annotation  FROM annotator_video WHERE ID = {0};'.format(video_id))
+  c.execute("SELECT annotation  FROM annotator_video WHERE ID = {0};".format(video_id))
   record = c.fetchone()
   s_record = str(record[0][1:-1].replace("\"", "\'").replace("true", "\'true\'").replace("false", "\'false\'"))
   return ast.literal_eval(s_record)
@@ -143,8 +143,8 @@ def reformatObject(obj, obj_type):
   annot = {}
   
   for o in obj:
-    tmp_frame_number = timeToFrameNumber(o['frame'])
-    annot[tmp_frame_number] = {'h': o['h'], 'w': o['w'], 'x': o['x'], 'y': o['y'], 'type': obj_type}
+    tmp_frame_number = timeToFrameNumber(o["frame"])
+    annot[tmp_frame_number] = {"h": o["h"], "w": o["w"], "x": o["x"], "y": o["y"], "type": obj_type}
   
   keys = annot.keys()
   keys.sort()
@@ -211,7 +211,7 @@ def main():
           # => remove object annotation
           annot[idx] = None
   
-    cv2.imshow('frame', frame)
+    cv2.imshow("frame", frame)
     if cv2.waitKey(0) & 0xFF == ord('q'):
       break
   
