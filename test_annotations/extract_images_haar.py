@@ -17,6 +17,8 @@ WHITE_COLOR_  = (255,255,255)
 BLACK_COLOR_  = (0,0,0)
 YELLOW_COLOR_ = (0,255,255)
 
+NOT_YET_ = -1
+
 def drawRectangle(frame, x, y, w, h, color=(255,255,255)):
   p1 = (int(x), int(y))
   p2 = (int(x+w), int(y+h))
@@ -71,7 +73,7 @@ def getNextCouple(lst, idx):
 def getFrac(frame_number, current_keyframe, next_keyframe):
   return (frame_number - current_keyframe) / (1.0 * (next_keyframe - current_keyframe))
 
-def myfun(annot, current_keyframe, frame_number):
+def getRect(annot, current_keyframe, frame_number):
   rec = annot.get(frame_number)
 
   if rec == None: 
@@ -79,16 +81,20 @@ def myfun(annot, current_keyframe, frame_number):
     r1 = annot.get(current_keyframe)
 
     if r1["next_frame"] == -1:
-        return None, None
+        return None, current_keyframe
+
+    if frame_number < current_keyframe:
+        return NOT_YET_, current_keyframe
 
     r2 = annot.get(r1["next_frame"])
+    
     frac = getFrac(frame_number, current_keyframe, r1["next_frame"])
     rec = interpolate(r1, r2, frac)
   else:
     # keyframe
     current_keyframe = frame_number
     
-  return current_keyframe, rec
+  return rec, current_keyframe
 
 def getAnnotations(c, video_id):
   c.execute('SELECT annotation  FROM annotator_video WHERE ID = {0};'.format(video_id))
@@ -133,6 +139,24 @@ def getParameters(argv):
 
   return db_path, video_path, output_path, video_id
 
+def reformatObject(obj, obj_type):
+  annot = {}
+  
+  for o in obj:
+    tmp_frame_number = timeToFrameNumber(o['frame'])
+    annot[tmp_frame_number] = {'h': o['h'], 'w': o['w'], 'x': o['x'], 'y': o['y'], 'type': obj_type}
+  
+  keys = annot.keys()
+  keys.sort()
+  
+  for i, k in enumerate(keys):
+    if (len(keys)-1) == i:
+        annot[k]["next_frame"] = -1
+    else:
+        annot[k]["next_frame"] = keys[i+1]
+  
+  return annot, timeToFrameNumber(obj[0]["frame"])
+
 ################################################################################
 
 def main():
@@ -144,51 +168,48 @@ def main():
   c = conn.cursor()
   db_annotations =  getAnnotations(c, video_id)
   
-  annot_all = []
-  for obj in db_annotations:
-    annot_tmp = {}
-  
-    for o in obj['keyframes']:
-      tmp_frame_number = timeToFrameNumber(o['frame'])
-      annot_tmp[tmp_frame_number] = {'h': o['h'], 'w': o['w'], 'x': o['x'], 'y': o['y'], 'type': obj['type']}
-  
-    keys = annot_tmp.keys()
-    keys.sort()
-  
-    for i, k in enumerate(keys):
-      if (len(keys)-1) == i:
-          annot_tmp[k]["next_frame"] = -1
-      else:
-          annot_tmp[k]["next_frame"] = keys[i+1]
-  
-    annot_all.append(annot_tmp)
-  
+  annot = []
+  current_keyframe = []
+
+  if isinstance(db_annotations, tuple): # more than one annotated object
+    for idx, obj in enumerate(db_annotations):
+      a, ck = reformatObject(obj["keyframes"], obj["type"])
+      annot.append(a)
+      current_keyframe.append(ck)
+  else: # one annotated object
+      a, ck = reformatObject(db_annotations["keyframes"], db_annotations["type"])
+      annot.append(a)
+      current_keyframe.append(ck)
+
   # video
   cap = cv2.VideoCapture(video_path)
   frame_number = 0
-  current_keyframe = [0]*len(annot_all)
   
   while(True):
     ret, frame = cap.read()
     clear_frame = frame.copy()
-    drawRectangle(frame, 40, 150, 1200, 370, YELLOW_COLOR_)
+    drawRectangle(frame, 40, 150, 1200, 370, YELLOW_COLOR_) # ROI
   
-    for i, annot_tmp in enumerate(annot_all):
-      if annot_tmp:
-        current_keyframe[i], rec = myfun(annot_tmp, current_keyframe[i], frame_number)
-        obj_type = annot_tmp[0]["type"]
+    for idx, a in enumerate(annot):
+      if a:
+        rect, current_keyframe[idx] = getRect(a, current_keyframe[idx], frame_number)
   
-        if rec:
+        if rect == NOT_YET_:
+          pass
+        elif rect:
           # drawing
-          drawRectangle(frame, rec["x"], rec["y"], rec["w"], rec["h"], getColor(obj_type))
-          drawText(frame, obj_type, rec["x"], rec["y"], getColor(obj_type))
+          obj_type = a.values()[0]["type"]
+          drawRectangle(frame, rect["x"], rect["y"], rect["w"], rect["h"], getColor(obj_type))
+          drawText(frame, obj_type, rect["x"], rect["y"], getColor(obj_type))
 
           # cropping
           if do_crop:
-            cropped_frame = cropImage(clear_frame, rec["x"], rec["y"], rec["w"], rec["h"])
+            cropped_frame = cropImage(clear_frame, rect["x"], rect["y"], rect["w"], rect["h"])
             saveCrop(cropped_frame, output_path, frame_number, obj_type)
         else:
-          annot_all[i] = None
+          # all annotations for particular object were already displayed
+          # => remove object annotation
+          annot[idx] = None
   
     cv2.imshow('frame', frame)
     if cv2.waitKey(0) & 0xFF == ord('q'):
