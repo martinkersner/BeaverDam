@@ -4,7 +4,7 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element, SubElement
 from xml.dom import minidom
 from lxml import etree
-import re # Martin Kersner, 2015/11/03
+from utils import mkdir
 
 class PascalVocWriter:
     def __init__(self, foldername, filename, imgSize, databaseSrc='Unknown', localImgPath=None):
@@ -86,17 +86,14 @@ class PascalVocWriter:
             ymax = SubElement(bndbox, 'ymax')
             ymax.text = str(each_object['ymax'])
 
-    def mkdir(self, directory):
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-
     def save(self, output_directory, targetFile = None):
         root = self.genXML()
         self.appendObjects(root)
         out_file = None
         if targetFile is None:
-            self.mkdir(output_directory)
-            out_file = open(os.path.join(output_directory, self.filename + '.xml'),'w')
+            mkdir(output_directory)
+            # out_file = open(os.path.join(output_directory, self.filename + '.xml'),'w')
+            out_file = open(os.path.join(output_directory, self.filename.split(".")[0] + '.xml'),'w') # Martin Kersner, 2016/12/26
         else:
             out_file = open(targetFile, 'w')
 
