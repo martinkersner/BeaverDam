@@ -7,6 +7,8 @@ import ast
 import sqlite3
 import cv2
 
+LAST_FRAME_ = -1
+
 class NoAnnotationException(Exception):
   pass
 
@@ -70,7 +72,7 @@ def getRect(annot, current_keyframe, frame_number):
     # interpolation
     r1 = annot.get(current_keyframe)
 
-    if r1["next_frame"] == -1:
+    if r1["next_frame"] == LAST_FRAME_:
       raise(LastObjectKeyFrameException)
 
     if frame_number < current_keyframe:
@@ -110,7 +112,7 @@ def reformatObject(obj, obj_type):
   
   for i, k in enumerate(keys):
     if (len(keys)-1) == i:
-        annot[k]["next_frame"] = -1
+        annot[k]["next_frame"] = LAST_FRAME_
     else:
         annot[k]["next_frame"] = keys[i+1]
   
