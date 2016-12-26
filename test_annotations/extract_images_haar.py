@@ -8,13 +8,10 @@ import cv2
 from utils import *
 from colors import *
 
-NOT_YET_ = -1
-
-def saveCrop(img, path, frame_number, obj_type, ext="png"):
-  mkdir(path)
+def saveCrop(img, path, frame_number, obj_id, obj_type, ext):
   object_path = os.path.join(path, obj_type)
   mkdir(object_path)
-  output_path = os.path.join(object_path, str(frame_number) + "." + ext)
+  output_path = os.path.join(object_path, str(frame_number) + "-" + str(obj_id) + "." + ext)
 
   cv2.imwrite(output_path, img)
 
@@ -31,61 +28,68 @@ def getParameters(argv):
 
   return db_path, video_path, output_path, video_id
 
-################################################################################
-
-ROI = {"x":        40,
-       "y":       150,
-       "width":  1200,
-       "height":  370}
-
 def main():
+  do_draw = False
+  ext     = "jpg"
+
+  ROI = {"x": 40,
+         "y": 150,
+         "w": 1200,
+         "h": 370}
+
+  ##############################################################################
+
   db_path, video_path, output_path, video_id = getParameters(sys.argv)
-  
-  do_crop = True
-  
   db_annotations =  getAnnotations(db_path, video_id)
-  
   annot, current_keyframe = convertAnnotations(db_annotations)
+
+  mkdir(output_path)
 
   # video
   cap = cv2.VideoCapture(video_path)
+
   frame_number = 0
   
   while(True):
     ret, frame = cap.read()
     clear_frame = frame.copy()
-    drawRectangle(frame, ROI["x"], ROI["y"], ROI["width"], ROI["height"], YELLOW_COLOR_) # ROI
+    drawRectangle(frame, ROI["x"], ROI["y"], ROI["w"], ROI["h"], YELLOW_COLOR_) # ROI
   
     for idx, a in enumerate(annot):
-      if a:
+      try:
         rect, current_keyframe[idx] = getRect(a, current_keyframe[idx], frame_number)
+      except (NoAnnotationException, NoAnnotationInFrameException):
+        continue
+      except LastObjectKeyFrameException:
+        # all annotations for particular object were already displayed
+        # => remove object annotation
+        annot[idx] = None
+        if finishedAnnotating(annot):
+          exit()
   
-        if rect == NOT_YET_:
-          pass
-        elif rect:
-          # drawing
-          obj_type = a.values()[0]["type"]
-          drawRectangle(frame, rect["x"], rect["y"], rect["w"], rect["h"], getColor(obj_type))
-          drawText(frame, obj_type, rect["x"], rect["y"], getColor(obj_type))
+      obj_type = a.values()[0]["type"]
 
-          # cropping
-          if do_crop:
-            cropped_frame = cropImage(clear_frame, rect["x"], rect["y"], rect["w"], rect["h"])
-            saveCrop(cropped_frame, output_path, frame_number, obj_type)
-        else:
-          # all annotations for particular object were already displayed
-          # => remove object annotation
-          annot[idx] = None
-  
-    cv2.imshow("frame", frame)
-    if cv2.waitKey(0) & 0xFF == ord('q'):
-      break
+      # drawing
+      if do_draw:
+        drawRectangle(frame, rect["x"], rect["y"], rect["w"], rect["h"], getColor(obj_type))
+        drawText(frame, obj_type, rect["x"], rect["y"], getColor(obj_type))
+
+      # cropping
+      cropped_frame = cropImage(clear_frame, rect["x"], rect["y"], rect["w"], rect["h"])
+      saveCrop(cropped_frame, output_path, frame_number, idx, obj_type, ext)
+
+    if do_draw:
+      cv2.imshow("frame", frame)
+      if cv2.waitKey(0) & 0xFF == ord('q'):
+        break
   
     frame_number += 1
     print frame_number
   
   cap.release()
-  cv2.destroyAllWindows()
+
+  if do_draw:
+    cv2.destroyAllWindows()
 
 if __name__ == "__main__":
   main()

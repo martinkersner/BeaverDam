@@ -7,6 +7,15 @@ import ast
 import sqlite3
 import cv2
 
+class NoAnnotationException(Exception):
+  pass
+
+class NoAnnotationInFrameException(Exception):
+  pass
+
+class LastObjectKeyFrameException(Exception):
+  pass
+
 def cropImage(img, x, y, w, h):
   return img[int(y):int(y+h), int(x):int(x+w)]
 
@@ -52,6 +61,9 @@ def getFrac(frame_number, current_keyframe, next_keyframe):
   return (frame_number - current_keyframe) / (1.0 * (next_keyframe - current_keyframe))
 
 def getRect(annot, current_keyframe, frame_number):
+  if not annot:
+    raise(NoAnnotationException)
+
   rec = annot.get(frame_number)
 
   if rec == None: 
@@ -59,10 +71,10 @@ def getRect(annot, current_keyframe, frame_number):
     r1 = annot.get(current_keyframe)
 
     if r1["next_frame"] == -1:
-        return None, current_keyframe
+      raise(LastObjectKeyFrameException)
 
     if frame_number < current_keyframe:
-        return NOT_YET_, current_keyframe
+      raise(NoAnnotationInFrameException)
 
     r2 = annot.get(r1["next_frame"])
     
@@ -129,3 +141,13 @@ def drawRectangle(frame, x, y, w, h, color=(255,255,255)):
 def drawText(img, text, x, y, color=(255,255,255)):
   offset = -5
   cv2.putText(img, text, (int(x), int(y+offset)), cv2.FONT_HERSHEY_PLAIN, 1.0, color)
+
+def finishedAnnotating(annotations):
+  finished = True
+
+  for a in annotations:
+    if a != None:
+      finished = False
+      break
+
+  return finished
