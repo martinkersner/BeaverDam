@@ -101,8 +101,8 @@ def main():
         saveCrop(cropped_frame, os.path.join(output_path, images_dir_name), tmp_img_name)
 
         # annotation
-        pascal_writer.addBndBox(rect["x"],
-                                rect["y"],
+        pascal_writer.addBndBox(rect["x"]-ROI["x"],
+                                rect["y"]-ROI["y"],
                                 rect["x"]+rect["w"],
                                 rect["y"]+rect["h"],
                                 obj_type)
