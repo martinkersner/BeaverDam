@@ -34,7 +34,7 @@ def getParameters(argv):
   return db_path, video_path, output_path, video_id
 
 def main():
-  do_draw = True
+  do_draw = False
 
   db_name = "HY" # not important
   ext     = "jpg"
@@ -66,6 +66,8 @@ def main():
   
   while(True):
     ret, frame = cap.read()
+    if not ret: break
+
     clear_frame = frame.copy()
     drawRectangle(frame, ROI["x"], ROI["y"], ROI["w"], ROI["h"], YELLOW_COLOR_) # ROI
   

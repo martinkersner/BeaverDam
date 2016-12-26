@@ -52,6 +52,8 @@ def main():
   
   while(True):
     ret, frame = cap.read()
+    if not ret: break
+
     clear_frame = frame.copy()
     drawRectangle(frame, ROI["x"], ROI["y"], ROI["w"], ROI["h"], YELLOW_COLOR_) # ROI
   
