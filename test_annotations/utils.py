@@ -62,7 +62,7 @@ def getNextCouple(lst, idx):
 def getFrac(frame_number, current_keyframe, next_keyframe):
   return (frame_number - current_keyframe) / (1.0 * (next_keyframe - current_keyframe))
 
-def getRect(annot, current_keyframe, frame_number):
+def getRect(annot, current_keyframe, truncated, frame_number):
   if not annot:
     raise(NoAnnotationException)
 
@@ -85,8 +85,9 @@ def getRect(annot, current_keyframe, frame_number):
   else:
     # keyframe
     current_keyframe = frame_number
+    truncated = rec["truncated"]
     
-  return rec, current_keyframe
+  return rec, current_keyframe, truncated
 
 def getAnnotations(db_path, video_id):
   with sqlite3.connect(db_path) as conn:
@@ -105,7 +106,7 @@ def reformatObject(obj, obj_type):
   
   for o in obj:
     tmp_frame_number = timeToFrameNumber(o["frame"])
-    annot[tmp_frame_number] = {"h": o["h"], "w": o["w"], "x": o["x"], "y": o["y"], "type": obj_type}
+    annot[tmp_frame_number] = {"h": o["h"], "w": o["w"], "x": o["x"], "y": o["y"], "type": obj_type, "truncated": o["truncated"]}
   
   keys = annot.keys()
   keys.sort()

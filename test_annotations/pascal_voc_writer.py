@@ -60,9 +60,10 @@ class PascalVocWriter:
 
         return top
 
-    def addBndBox(self, xmin, ymin, xmax, ymax, name):
+    def addBndBox(self, xmin, ymin, xmax, ymax, name, truncated):
         bndbox = {'xmin':xmin, 'ymin':ymin, 'xmax':xmax, 'ymax':ymax}
         bndbox['name'] = name
+        bndbox['truncated'] = truncated
         self.boxlist.append(bndbox);
 
     def appendObjects(self, top):
@@ -73,7 +74,8 @@ class PascalVocWriter:
             pose = SubElement(object_item, 'pose')
             pose.text = "Unspecified"
             truncated = SubElement(object_item, 'truncated')
-            truncated.text = "0"
+            # truncated.text = "0"
+            truncated.text = str(each_object['truncated'])
             difficult = SubElement(object_item, 'difficult')
             difficult.text = "0"
             bndbox = SubElement(object_item, 'bndbox')

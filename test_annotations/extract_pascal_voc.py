@@ -35,6 +35,7 @@ def getParameters(argv):
 
 def main():
   do_draw = False
+  do_draw = True
 
   db_name = "HY" # not important
   ext     = "jpg"
@@ -52,6 +53,7 @@ def main():
   db_path, video_path, output_path, video_id = getParameters(sys.argv)
   db_annotations = getAnnotations(db_path, video_id)
   annot, current_keyframe = convertAnnotations(db_annotations)
+  truncated = [0]*len(annot)
 
   mkdir(output_path)
 
@@ -79,7 +81,7 @@ def main():
 
     for idx, a in enumerate(annot):
       try:
-        rect, current_keyframe[idx] = getRect(a, current_keyframe[idx], frame_number)
+        rect, current_keyframe[idx], truncated[idx] = getRect(a, current_keyframe[idx], truncated[idx], frame_number)
       except (NoAnnotationException, NoAnnotationInFrameException):
         continue
       except LastObjectKeyFrameException:
@@ -107,7 +109,8 @@ def main():
                                 rect["y"]-ROI["y"]+1,
                                 rect["x"]-ROI["x"]+rect["w"],
                                 rect["y"]-ROI["y"]+rect["h"],
-                                obj_type)
+                                obj_type,
+                                truncated[idx])
 
         pascal_writer.save(os.path.join(output_path, annotations_dir_name))
 
