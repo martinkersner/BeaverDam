@@ -42,6 +42,7 @@ def main():
   db_path, video_path, output_path, video_id = getParameters(sys.argv)
   db_annotations =  getAnnotations(db_path, video_id)
   annot, current_keyframe = convertAnnotations(db_annotations)
+  tmp_truncated = None
 
   mkdir(output_path)
 
@@ -59,7 +60,7 @@ def main():
   
     for idx, a in enumerate(annot):
       try:
-        rect, current_keyframe[idx] = getRect(a, current_keyframe[idx], frame_number)
+        rect, current_keyframe[idx], tmp_truncated = getRect(a, current_keyframe[idx], tmp_truncated, frame_number)
       except (NoAnnotationException, NoAnnotationInFrameException):
         continue
       except LastObjectKeyFrameException:
