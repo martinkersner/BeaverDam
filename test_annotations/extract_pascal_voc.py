@@ -89,6 +89,8 @@ def main():
         if finishedAnnotating(annot):
           exit()
   
+      rect = cropRectangle(ROI, rect)
+
       if rect:
         obj_type = a.values()[0]["type"]
 
@@ -103,8 +105,8 @@ def main():
         # annotation
         pascal_writer.addBndBox(rect["x"]-ROI["x"],
                                 rect["y"]-ROI["y"],
-                                rect["x"]+rect["w"],
-                                rect["y"]+rect["h"],
+                                rect["x"]-ROI["x"]+rect["w"],
+                                rect["y"]-ROI["y"]+rect["h"],
                                 obj_type)
 
         pascal_writer.save(os.path.join(output_path, annotations_dir_name))

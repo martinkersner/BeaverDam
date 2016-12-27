@@ -153,3 +153,45 @@ def finishedAnnotating(annotations):
       break
 
   return finished
+
+def rec2pts(rec):
+  pts = {}
+
+  pts["x1"] = rec["x"]
+  pts["y1"] = rec["y"]
+  pts["x2"] = rec["x"]+rec["w"]
+  pts["y2"] = rec["y"]+rec["h"]
+
+  return pts
+
+def pts2rec(pts):
+  rec = {}
+
+  rec["x"] = pts["x1"]
+  rec["y"] = pts["y1"]
+  rec["w"] = pts["x2"]-pts["x1"]
+  rec["h"] = pts["y2"]-pts["y1"]
+
+  return rec
+
+def cropRectangle(roi, rec):
+  cropped_rec = {}
+
+  roi_pts = rec2pts(roi)
+  rec_pts = rec2pts(rec)
+
+  cropped_rec["x1"] = max(roi_pts["x1"], rec_pts["x1"])
+  cropped_rec["y1"] = max(roi_pts["y1"], rec_pts["y1"])
+
+  cropped_rec["x2"] = min(roi_pts["x2"], rec_pts["x2"])
+  cropped_rec["y2"] = min(roi_pts["y2"], rec_pts["y2"])
+
+  # rectangle is out of ROI boundaries
+  if cropped_rec["x1"] > cropped_rec["x2"] or cropped_rec["y1"] > cropped_rec["y2"]:
+    cropped_rec = None
+  else:
+    cropped_rec = pts2rec(cropped_rec)
+
+  # TODO minimum size of object
+
+  return cropped_rec
