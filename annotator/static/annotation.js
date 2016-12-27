@@ -58,6 +58,7 @@ class Annotation {
                 nextIndex: null,
                 closestIndex: null,
                 continueInterpolation: false,
+                truncated: 0,
             };
         }
 
@@ -111,6 +112,8 @@ class Annotation {
             nextIndex: nextIndex,
             closestIndex: closestIndex,
             continueInterpolation: prevIndex != null ? this.keyframes[prevIndex].continueInterpolation : true,
+            //truncated: this.keyframes[prevIndex].truncated,
+            truncated: 0,
         };
     }
 
@@ -120,6 +123,8 @@ class Annotation {
 
         if (frame.continueInterpolation === undefined)
             frame.continueInterpolation = true;
+
+        frame.truncated = 0
 
         // Update the closestIndex-th frame
         if (closestIndex != null) {
@@ -162,7 +167,8 @@ class Annotation {
             var newFrame = {
                                 time: justBeforeTime, 
                                 bounds: bounds,
-                                continueInterpolation: false
+                                continueInterpolation: false,
+                                truncated: 0
                             }
             this.updateKeyframe(newFrame, usePreciseFrameMatching);
         }

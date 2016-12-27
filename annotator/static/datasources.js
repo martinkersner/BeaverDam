@@ -12,6 +12,7 @@ var DataSources = {
                 }),
                 time: json.frame,
                 continueInterpolation: json.continueInterpolation === false ? false : true,
+                truncated: json.truncated,
             };
         },
 
@@ -24,6 +25,7 @@ var DataSources = {
                 h: attr.height,
                 continueInterpolation: frame.continueInterpolation, 
                 frame: frame.time,
+                truncated: frame.truncated,
             };
         },
     },

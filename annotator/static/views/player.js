@@ -198,10 +198,12 @@ class PlayerView {
             $(this).on('keydn-f                ', () => this.stepbackward());
             // video frame stepping - capture the repeat events with the 'r' handler
             $(this).on('keydn-a keydnr-a     ', () => {
+                document.getElementById("0").checked = true; // Martin Kersner, 2016/12/27
                 if (!this.loading)
                     this.video.previousFrame()
             });
             $(this).on('keydn-s keydnr-s    ', () => {
+                document.getElementById("0").checked = true; // Martin Kersner, 2016/12/27
                 if (!this.loading)
                     this.video.nextFrame()
             });
@@ -219,6 +221,8 @@ class PlayerView {
     }
 
     play() {
+        document.getElementById("0").checked = true; // Martin Kersner, 2016/12/27
+
         if (this.video.currentTime < this.video.duration) {
             this.video.play();
         }
@@ -226,11 +230,15 @@ class PlayerView {
     }
 
     pause() {
+        document.getElementById("0").checked = true; // Martin Kersner, 2016/12/27
+
         this.video.pause();
         return false;
     }
 
     playPause() {
+        document.getElementById("0").checked = true; // Martin Kersner, 2016/12/27
+
         if (this.video.paused) {
 
             return this.play();
@@ -241,16 +249,22 @@ class PlayerView {
     }
 
     jumpToTimeAndPause(time) {
+        document.getElementById("0").checked = true; // Martin Kersner, 2016/12/27
+
         this.video.pause();
         this.video.currentTime = time;
     }
 
     stepTime(timeDelta) {
+        document.getElementById("0").checked = true; // Martin Kersner, 2016/12/27
+
         this.video.currentTime = this.video.currentTime + timeDelta;
         return false;
     }
 
     rewindStep() {
+        document.getElementById("0").checked = true; // Martin Kersner, 2016/12/27
+
         if (this.video.currentTime <= 0) {
             this.stopRewind();
         }
@@ -260,6 +274,8 @@ class PlayerView {
     }
 
     rewind() {
+        document.getElementById("0").checked = true; // Martin Kersner, 2016/12/27
+
         this.video.pause();
         clearInterval(this.rewindTimerId);
         this.rewindTimerId = setInterval(this.rewindStep.bind(this), 100);
@@ -268,6 +284,8 @@ class PlayerView {
     }
 
     stopRewind() {
+        document.getElementById("0").checked = true; // Martin Kersner, 2016/12/27
+
         clearInterval(this.rewindTimerId);
         return false;
     }

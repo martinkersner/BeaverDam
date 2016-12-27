@@ -111,7 +111,31 @@ class Player {
             this.view.video.pause();
         });
 
-        $(rect).on('focus', () => {
+        var keyFrameId = 0;
+
+				$(rect).on('focus', () => {
+          // Martin Kersner, 2016/12/26
+          var timeArray = []
+          var currentTime = this.view.video.currentTime;
+          
+          for (var i = 0; i < annotation.keyframes.length; i++) {
+             var timeDiff = Math.abs(annotation.keyframes[i].time - currentTime);
+             timeArray.push({"time_diff": timeDiff,
+                             "id":        i,
+                             "truncated": annotation.keyframes[i].truncated});
+          }
+          timeArray.sort(function(a, b){return a.time_diff - b.time_diff});
+          
+          var truncatedId = timeArray[0].truncated.toString();
+          keyFrameId =  timeArray[0].id.toString();
+          document.getElementById(truncatedId).checked = true;
+          
+          $('input[type=radio][name=truncated]').unbind();
+          
+          $('input[type=radio][name=truncated]').change(function() {
+          	annotation.keyframes[keyFrameId].truncated = parseInt(this.value);
+          });
+            
             this.selectedAnnotation = annotation;
             $(this).triggerHandler('change-onscreen-annotations');
             $(this).triggerHandler('change-keyframes');

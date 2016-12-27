@@ -144,6 +144,16 @@
               <div class="glyphicon glyphicon-trash player-control-delete-keyframe"></div>
               <input class="form-control player-control-time" id="frame-number" placeholder="0">
               <span class="" onClick="drawROI()" style="cursor: pointer">ROI</span>
+
+              <form name="truncatedForm" style="display: inline-block">
+              <div class="radio-toolbar">
+                <input type="radio" id="0" name="truncated" value=0 checked>
+                <label for="0">Not truncated</label>
+
+                <input type="radio" id="1" name="truncated" value=1>
+                <label for="1">Truncated</label>
+              </div>
+              </form>
             </div>
           </div>
 
