@@ -16,22 +16,18 @@ Video annotation tool for deep learning training labels
     `scripts/setup`
  5. Download sample data:  
     `scripts/seed -f`
+ 6. Clear database
+     `./clear_database`
 
 When running any `./manage.py` commands, use `source venv/bin/activate` to enter venv first.
 
-### If using mturk
+## Add new user
+Run command:
+`./add_user name password`
 
-Replace the credentials below with your own:
-
-```bash
-export AWS_ID="AKIAAAAYOURIDHERE"
-export AWS_KEY="YOURmturkKEYhere5DyUrkm/81SRSMG+5174"
-```
-
-When ready for real turkers, edit `MTURK_SANDBOX` to `False` in `settings.py`.
-
-It is recommended to use IAM keys with only mturk permissions instead of root key.
-
+## Add video
+Move video file (\*.mp4) to *annotator/static/videos* directory and run command:
+`./add_video path/to/video/file`
 
 ## Running the server
 
@@ -47,18 +43,3 @@ Need to run on a custom port? `env PORT=1234 scripts/serve`
 
 To make a superuser account for testing, or for production, run inside venv `./manage.py createsuperuser`
 If you are using sample data, login with username `test` and password `password`
-
-### Simulating mturk view in debug
-
-To see what video pages look like on mturk preview mode, set url param `preview=true`.
-For mturk's HIT accepted mode, set url param `mturk=true`.
-
-Example: `localhost:5000/video/0/?mturk=true`
-
-### Running tests
-
-Inside venv, run `./manage.py test`
-
-## Contributing
-
-See [annotator/static/README.md](annotator/static) for more info.
