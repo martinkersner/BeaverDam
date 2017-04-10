@@ -34,7 +34,7 @@ def getParameters(argv):
   return db_path, video_path, output_path, video_id
 
 def main():
-  do_draw = True
+  do_draw = False
 
   db_name = "HY" # not important
   ext     = "jpg"
@@ -93,7 +93,6 @@ def main():
       if rect:
         rect = cropRectangle(ROI, rect)
         obj_type = a.values()[0]["type"]
-        do_draw = True 
 
         if do_draw:
           drawRectangle(frame, rect["x"], rect["y"], rect["w"], rect["h"], getColor(obj_type)) # object
@@ -118,8 +117,6 @@ def main():
       if cv2.waitKey(0) & 0xFF == ord('q'):
         break
 
-    do_draw = False
-  
     frame_number += 1
     print frame_number
   
