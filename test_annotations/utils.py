@@ -79,9 +79,10 @@ def getRect(annot, current_keyframe, truncated, frame_number):
       raise(NoAnnotationInFrameException)
 
     r2 = annot.get(r1["next_frame"])
-    
+
     frac = getFrac(frame_number, current_keyframe, r1["next_frame"])
     rec = interpolate(r1, r2, frac)
+    pass
   else:
     # keyframe
     current_keyframe = frame_number

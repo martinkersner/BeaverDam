@@ -23,7 +23,7 @@ def makeImageName(frame_number, ext):
 def getParameters(argv):
   if len(argv) != 5:
     print "Usage:"
-    print "./extract_pascal_voc.py path/to/db video_id path/to/video path/to/output/folder "
+    print "./extract_pascal_voc.py path/to/db video_id path/to/video path/to/output/folder"
     exit(1)
 
   db_path     = argv[1]
@@ -34,7 +34,6 @@ def getParameters(argv):
   return db_path, video_path, output_path, video_id
 
 def main():
-  do_draw = False
   do_draw = True
 
   db_name = "HY" # not important
@@ -91,10 +90,10 @@ def main():
         if finishedAnnotating(annot):
           exit()
   
-      rect = cropRectangle(ROI, rect)
-
       if rect:
+        rect = cropRectangle(ROI, rect)
         obj_type = a.values()[0]["type"]
+        do_draw = True 
 
         if do_draw:
           drawRectangle(frame, rect["x"], rect["y"], rect["w"], rect["h"], getColor(obj_type)) # object
@@ -118,6 +117,8 @@ def main():
       cv2.imshow("frame", frame)
       if cv2.waitKey(0) & 0xFF == ord('q'):
         break
+
+    do_draw = False
   
     frame_number += 1
     print frame_number

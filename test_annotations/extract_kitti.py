@@ -90,11 +90,11 @@ def main():
         annot[idx] = None
         if finishedAnnotating(annot):
           exit()
-
-      rect = cropRectangle(ROI, rect)
   
       if rect:
+        rect = cropRectangle(ROI, rect)
         obj_type = a.values()[0]["type"]
+        do_draw = True 
 
         if do_draw:
           drawRectangle(frame, rect["x"], rect["y"], rect["w"], rect["h"], getColor(obj_type)) # object
