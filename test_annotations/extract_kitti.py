@@ -23,7 +23,7 @@ def makeImageName(frame_number, ext):
 def getParameters(argv):
   if len(argv) != 5:
     print "Usage:"
-    print "./extract_pascal_voc.py path/to/db video_id path/to/video path/to/output/folder"
+    print "./extract_kitti.py path/to/db video_id path/to/video path/to/output/folder"
     exit(1)
 
   db_path     = argv[1]
@@ -34,7 +34,7 @@ def getParameters(argv):
   return db_path, video_path, output_path, video_id
 
 def main():
-  do_draw = True
+  do_draw = False
 
   db_name = "HY" # not important
   ext     = "jpg"
@@ -55,6 +55,8 @@ def main():
   truncated = [0]*len(annot)
 
   mkdir(output_path)
+  output_path = os.path.join(output_path, str(video_id))
+  mkdir(output_path)
 
   # video
   cap = cv2.VideoCapture(video_path)
@@ -73,10 +75,14 @@ def main():
     # drawRectangle(frame, ROI["x"], ROI["y"], ROI["w"], ROI["h"], YELLOW_COLOR_) # ROI
   
     tmp_img_name = makeImageName(frame_number, ext)
-    pascal_writer = PascalVocWriter(output_path,
-                                    tmp_img_name,
-                                    dims,
-                                    databaseSrc=db_name)
+    #pascal_writer = PascalVocWriter(output_path,
+    #                                tmp_img_name,
+    #                                dims,
+    #                                databaseSrc=db_name)
+
+    annot_path = os.path.join(output_path, annotations_dir_name)
+    if not os.path.exists(annot_path):
+      os.makedirs(annot_path)
 
     for idx, a in enumerate(annot):
       try:
@@ -104,14 +110,16 @@ def main():
         saveCrop(cropped_frame, os.path.join(output_path, images_dir_name), tmp_img_name)
 
         # annotation
-        pascal_writer.addBndBox(rect["x"]-ROI["x"]+1,
-                                rect["y"]-ROI["y"]+1,
-                                rect["x"]-ROI["x"]+rect["w"],
-                                rect["y"]-ROI["y"]+rect["h"],
-                                obj_type,
-                                truncated[idx])
+        with open(os.path.join(output_path, annotations_dir_name, str(frame_number)+".txt"), "a") as f: 
+          f.write("{} 0.0 0 0.0 {} {} {} {} 0.0 0.0 0.0 0.0 0.0 0.0 0.0\n".format(obj_type, rect["x"], rect["y"], rect["x"]+rect["w"], rect["y"]+rect["h"]))
+        #pascal_writer.addBndBox(rect["x"]-ROI["x"]+1,
+        #                        rect["y"]-ROI["y"]+1,
+        #                        rect["x"]-ROI["x"]+rect["w"],
+        #                        rect["y"]-ROI["y"]+rect["h"],
+        #                        obj_type,
+        #                        truncated[idx])
 
-        pascal_writer.save(os.path.join(output_path, annotations_dir_name))
+        #pascal_writer.save(os.path.join(output_path, annotations_dir_name))
 
     if do_draw:
       cv2.imshow("frame", frame)
