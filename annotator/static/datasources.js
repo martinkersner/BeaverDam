@@ -11,7 +11,7 @@ var DataSources = {
                     height: json.h,
                 }),
                 time: json.frame,
-                continueInterpolation: json.continueInterpolation === false ? false : true,
+                continueInterpolation: json.continueInterpolation === false ? false : false,
             };
         },
 

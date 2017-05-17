@@ -110,7 +110,8 @@ class Annotation {
             prevIndex: prevIndex,
             nextIndex: nextIndex,
             closestIndex: closestIndex,
-            continueInterpolation: prevIndex != null ? this.keyframes[prevIndex].continueInterpolation : true,
+            //continueInterpolation: prevIndex != null ? this.keyframes[prevIndex].continueInterpolation : true,
+            continueInterpolation: prevIndex != null ? false : false,
         };
     }
 
@@ -119,7 +120,7 @@ class Annotation {
         var {prevIndex, nextIndex, closestIndex} = this.getFrameAtTime(frame.time);
 
         if (frame.continueInterpolation === undefined)
-            frame.continueInterpolation = true;
+            frame.continueInterpolation = false;
 
         // Update the closestIndex-th frame
         if (closestIndex != null) {

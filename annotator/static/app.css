@@ -154,6 +154,8 @@ div.imgplay {
 }
 .player-rect-noreal {
     stroke-dasharray: 8, 4;
+    stroke-width: 0;
+    fill-opacity: 0;
 }
 .player-rect-noselected.player-rect-noreal.player-rect-nosinglekeyframe {
     display: none;
