@@ -2,14 +2,14 @@
 # Martin Kersner, m.kersner@gmail.com
 # 2017/05/17
 
-# ./add_image_list.sh image_list_name /path/to/directory/with/images/
+# ./add_image_list.sh /path/to/directory/with/images/
 
 # Images have to located withing subdirectory of BeaverDam annotator/static/images/NAME_OF_DIRECTORY/
 # You have to specify absolute path e.g. /home/ubuntu/BeaverDam/annotator/static/images/NAME_OF_DIRECTORY/
 # Currently, only PNG files are utilized.
 
-IMAGE_LIST_NAME=$1
-IMAGE_LIST_PATH=$2
+IMAGE_LIST_PATH=$1
+IMAGE_LIST_NAME=`basename "$IMAGE_LIST_PATH"`
 
 ## image list
 FIRST_IMAGE=true
