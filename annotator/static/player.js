@@ -113,6 +113,8 @@ class Player {
         });
 
         $(rect).on('focus', () => {
+            var radiobtn = document.getElementById("object-radio-"+annotation.type);
+            radiobtn.checked = true;
             this.selectedAnnotation = annotation;
             $(this).triggerHandler('change-onscreen-annotations');
             $(this).triggerHandler('change-keyframes');
