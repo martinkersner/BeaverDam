@@ -230,12 +230,33 @@ class Player {
         }
     }
 
+    // Martin Kersner, 2017/05/22
+    getWrongAnnotations() {
+      var wrong_idx_arr = [];
+      for (var idx = 0; idx < window.p.annotations.length; ++idx) {
+        var wrong = window.p.annotations[idx].wrong;
+
+        if (wrong) {
+          var time = window.p.annotations[idx].keyframes[0].time;
+          var wrong_exist = $.inArray(time, wrong_idx_arr);
+
+          if (wrong_exist == -1) {
+            wrong_idx_arr.push(time);
+          }
+        }
+      }
+
+      return wrong_idx_arr;
+    }
+
     drawKeyframes() {
+        var wrongAnnotations = this.getWrongAnnotations();
         this.view.keyframebar.resetWithDuration(this.view.video.duration);
         for (let annotation of this.annotations) {
             for (let keyframe of annotation.keyframes) {
                 let selected = (annotation == this.selectedAnnotation);
-                this.view.keyframebar.addKeyframeAt(keyframe.time, {selected});
+                this.view.keyframebar.addKeyframeAt(keyframe.time, {selected}, wrongAnnotations);
+                //this.view.keyframebar.addKeyframeAt(keyframe.time, {selected});
             }
         }
     }

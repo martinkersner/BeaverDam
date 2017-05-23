@@ -26,6 +26,10 @@ class Annotation {
         // Type of annotation
         this.type = type;
 
+        // Martin Kersner, 2017/05/22
+        // Wrong classification
+        this.wrong = false;
+
         // Prevent adding new properties
         Misc.preventExtensions(this, Annotation);
     }
@@ -34,10 +38,12 @@ class Annotation {
     static newFromCreationRect() {
         var type = document.querySelector('input[name = "object"]:checked').value;
         var fill = Misc.getRandomColor(type);
+        var wrong = false;
         return new Annotation({
             keyframes: [],
             fill: fill,
             id: fill,
+            wrong: wrong, // Martin Kersner, 2017/05/22
             type: type,
         });
     }

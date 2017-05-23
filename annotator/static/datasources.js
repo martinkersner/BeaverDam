@@ -34,6 +34,7 @@ var DataSources = {
             annotation.keyframes = json.keyframes.map(DataSources.frame.fromJson);
             annotation.type = json.type;
             annotation.fill = json.color || Misc.getRandomColor();
+            annotation.wrong = json.wrong || false; // Martin Kersner, 2017/05/22
             return annotation;
         },
 
@@ -42,6 +43,7 @@ var DataSources = {
                 keyframes: annotation.keyframes.map(DataSources.frame.toJson),
                 type: annotation.type,
                 color: annotation.fill,
+                wrong: annotation.wrong || false, // Martin Kersner, 2017/05/22
             };
         },
     },

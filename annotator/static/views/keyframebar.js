@@ -7,6 +7,10 @@ var KeyframebarConstants = {
         `<svg viewBox="0 0 100 100" preserveAspectRatio="xMaxYMax">
             <circle cx="50" cy="50" r="30"></circle>
         </svg>`,
+    KEYFRAME_RED_SVG:
+        `<svg viewBox="0 0 100 100" preserveAspectRatio="xMaxYMax">
+            <circle cx="50" cy="50" r="30" style="fill: red"></circle>
+        </svg>`,
 };
 
 
@@ -61,16 +65,26 @@ class Keyframebar {
         this.duration = duration;
     }
 
-    addKeyframeAt(time, classNameExtBooleans) {
+    addKeyframeAt(time, classNameExtBooleans, wrongAnnotations) {
         var frac = time / this.duration;
         var classBaseName = this.classBaseName.add('keyframe');
         var classNames = Misc.getClassNamesFromExts([classBaseName], classBaseName, classNameExtBooleans);
 
-        $(this.KEYFRAME_SVG)
-        .attr({class: classNames.join(' ')})
-        .css({'left': `${frac * 100}%`})
-        .click(() => { $(this).triggerHandler('jump-to-time', time); })
-        .appendTo(this.$container);
+        var isWrong = $.inArray(time, wrongAnnotations);
+        if (isWrong != -1) {
+          $(this.KEYFRAME_RED_SVG)
+          .attr({class: classNames.join(' ')})
+          .css({'left': `${frac * 100}%`})
+          .click(() => { $(this).triggerHandler('jump-to-time', time); })
+          .appendTo(this.$container);
+        }
+        else {
+          $(this.KEYFRAME_SVG)
+          .attr({class: classNames.join(' ')})
+          .css({'left': `${frac * 100}%`})
+          .click(() => { $(this).triggerHandler('jump-to-time', time); })
+          .appendTo(this.$container);
+        }
     }
 }
 
