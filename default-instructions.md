@@ -9,13 +9,21 @@ We need this so that we can train a computer to detect objects in image.
 3. Adjust the box to keep it accurate.
 4. After all objects are annotated in image, press 's' key to go to next image.
 
-For example:
-### Good:
-![](https://raw.githubusercontent.com/wiki/xysense/BeaverDam/images/good_1.png)
-![](https://raw.githubusercontent.com/wiki/xysense/BeaverDam/images/good_2.png)
-### Bad:
-![](https://raw.githubusercontent.com/wiki/xysense/BeaverDam/images/bad_1.png)
-![](https://raw.githubusercontent.com/wiki/xysense/BeaverDam/images/bad_2.png)
+### Examples of correct and wrong annotations
+![](http://i.imgur.com/eH7447y.png)
+![](http://i.imgur.com/OJFawLh.png)
+
+#### Occluded objects I
+![](http://i.imgur.com/konMqlX.png)
+![](http://i.imgur.com/K4nrQ2G.png)
+
+#### Occluded objects II
+![](http://i.imgur.com/Hw7mXi9.png)
+![](http://i.imgur.com/WduYbXi.png)
+
+#### No fully visible objects
+![](http://i.imgur.com/gINgF8e.png)
+![](http://i.imgur.com/8vrWefC.png)
 
 ## Keyboard shortcuts
 - `s` move to the next image
