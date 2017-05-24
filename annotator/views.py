@@ -169,6 +169,7 @@ def video(request, video_id):
 class AnnotationView(View):
 
     def get(self, request, video_id):
+        return None # Martin Kersner, 2017/05/24
         video = Video.objects.get(id=video_id)
         return HttpResponse(video.annotation, content_type='application/json')
 
