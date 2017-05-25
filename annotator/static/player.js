@@ -271,6 +271,7 @@ class Player {
 
         var {bounds, prevIndex, nextIndex, closestIndex, continueInterpolation} = annotation.getFrameAtTime(time, this.isImageSequence);
 
+        rect.classNameExtBooleans.wrong = annotation.wrong;
         // singlekeyframe determines whether we show or hide the object
         // we want to hide if:
         //   - the very first frame object is in the future (nextIndex == 0 && closestIndex is null)

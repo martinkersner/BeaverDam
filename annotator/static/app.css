@@ -245,3 +245,9 @@ div.imgplay {
     font-weight: 300;
     font-size: 18px;
 }
+
+/* Martin Kersner, 2017/05/25 */
+.player-rect-wrong {
+    stroke-dasharray: 8, 4;
+    stroke-width: 3;
+}
