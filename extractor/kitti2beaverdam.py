@@ -38,10 +38,6 @@ def main():
           y = int(float(ann_str[5]))
           w = int(float(ann_str[6])) - int(float(ann_str[4]))
           h = int(float(ann_str[7])) - int(float(ann_str[5]))
-          # x = float(ann_str[4])
-          # y = float(ann_str[5])
-          # w = float(ann_str[6]) - float(ann_str[4])
-          # h = float(ann_str[7]) - float(ann_str[5])
 
           keyframes = {}
           keyframes["x"] = x
@@ -59,8 +55,6 @@ def main():
           ann_all.append(ann)
 
   print(json_dump(ann_all))
-
-        # {"color": "#3315a8", "wrong": false, "type": "Traffic Light", "keyframes": [{"h": 78, "frame": 99, "w": 169, "y": 206, "x": 254, "continueInterpolation": false}]}
 
 if __name__ == "__main__":
   main()
