@@ -41,6 +41,24 @@ We need this so that we can train a computer to detect objects in image.
 - Pedestrian
 - Cyclist
 - Motorcyclist
+- Traffic Lights
+
+### Traffic Lights
+In case of traffic lights you **shouldn't** annotate only bulbs but whole traffic light without pole. 
+- RedLight
+- GreenLight
+- RedLight+GreenArrow
+- OrangeLight
+- RedLight+OrangeLight
+- GreenLight+GreenArrow
+- GreenLight+OrangeLight
+
+### Traffic Light Annotation Examples
+<center>
+  <img src="http://i.imgur.com/hfPBBIW.png" /><br/ >
+  <img src="http://i.imgur.com/gjRLznZ.png" /><br/ >
+  <img src="http://i.imgur.com/YrsyYeI.png" />
+</center>
 
 ## Detailed Instructions
 1. We need you to draw an accurate annotation box around each object (defined above) you see in the image.
