@@ -44,7 +44,8 @@ We need this so that we can train a computer to detect objects in image.
 - Traffic Lights
 
 ### Traffic Lights
-In case of traffic lights you **shouldn't** annotate only bulbs but whole traffic light without pole. 
+In case of traffic lights you **shouldn't** annotate only bulbs but whole traffic light without pole.
+
 - RedLight
 - GreenLight
 - RedLight+GreenArrow
