@@ -53,7 +53,7 @@ We need this so that we can train a computer to detect objects in image.
 - GreenLight+OrangeLight
 
 <center>
-  <img src=""/><br/ >
+  <img src="http://i.imgur.com/tMdlITv.jpg"/><br/ >
 </center>
 
 In case of traffic lights you **shouldn't** annotate only bulbs but whole traffic light without pole.
