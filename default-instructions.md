@@ -54,7 +54,10 @@ We need this so that we can train a computer to detect objects in image.
 
 <center>
   <img src="http://i.imgur.com/tMdlITv.jpg"/><br/ >
+  Example of traffic light rule in the dataset.
 </center>
+
+Even though colors of traffic light are not good to recognize, you need to label the traffic light following above bulbs.
 
 In case of traffic lights you **shouldn't** annotate only bulbs but whole traffic light without pole.
 
