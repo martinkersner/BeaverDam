@@ -4,12 +4,12 @@ Your task is to accurately draw annotation boxes around predefined objects in ea
 We need this so that we can train a computer to detect objects in image.
 
 ## Quick Instructions
-0-1. When the image is too large to see in your browser, please click the 'Scale to fit' button at the bottom right of the page.
-0-2. When the frame control key('s', 'a') does not work, please click outside of the image then press the control key.
-1. Select correct class for object you want to annotate.
-2. Draw a box accurately around an object (covering every part you can see).
-3. Adjust the box to keep it accurate.
-4. After all objects are annotated in image, press 's' key to go to next image.
+0. When the image is too large to see in your browser, please click the 'Scale to fit' button at the bottom right of the page.
+1. When the frame control key('s', 'a') does not work, please click outside of the image then press the control key.
+2. Select correct class for object you want to annotate.
+3. Draw a box accurately around an object (covering every part you can see).
+4. Adjust the box to keep it accurate.
+5. After all objects are annotated in image, press 's' key to go to next image.
 
 ### Examples of correct and wrong annotations
 
