@@ -37,21 +37,15 @@ def main():
   annotations_dir_name = "ann"
   images_dir_name      = "img"
 
-  # ROI = {"x": 0,
-         # "y": 0,
-         # "w": 1280,
-         # "h": 720}
-
-  # KITTI SIZE
   ROI = {"x": 0,
          "y": 0,
-         "w": 1242,
-         "h": 375}
+         "w": 1200,
+         "h": 370}
 
   ##############################################################################
 
   args = getParameters(sys.argv)
-  db_annotations, _, db_image_list, db_dirname = getImageListInformation(args.db_path, args.id)
+  db_annotations, db_image_host, db_image_list, db_dirname = getImageListInformation(args.db_path, args.id)
 
   # TODO remove already existing
   # TODO warning
@@ -60,12 +54,16 @@ def main():
   output_full_path = os.path.join(args.output_path, db_dirname)
   mkdir(output_full_path)
 
+  db_name = "HY"
+  dims = (370, 1200, 3)
+
   # create ann and img subdirectories
   mkdir(os.path.join(output_full_path, annotations_dir_name))
   mkdir(os.path.join(output_full_path, images_dir_name))
 
   # path to directory of input images
-  img_input_path = os.path.join(img_db_path, db_dirname)
+  # img_input_path = os.path.join(img_db_path, db_dirname)
+  img_input_path = os.path.join(img_db_path, os.path.split(db_image_host)[-1])
 
   annotation_converted = {}
   for ann in db_annotations:
@@ -80,6 +78,10 @@ def main():
     image_name = db_image_list[keyframe].split(".")[0]
 
     # drawRectangle(frame, ROI["x"], ROI["y"], ROI["w"], ROI["h"], YELLOW_COLOR_) # ROI
+    pascal_writer = PascalVocWriter(output_full_path,
+                                    str(image_name),
+                                    dims,
+                                    databaseSrc=db_name)
   
     for ann in annotation_converted[keyframe]:
       rect = getRectImageList(ann["keyframes"][0]) # each annotated object has its won annotation
@@ -97,6 +99,15 @@ def main():
       if args.kitti_format:
         with open(os.path.join(output_full_path, annotations_dir_name, str(image_name)+".txt"), "a") as f: 
           f.write("{} 0.0 0 0.0 {} {} {} {} 0.0 0.0 0.0 0.0 0.0 0.0 0.0\n".format(obj_type, rect["x"], rect["y"], rect["x"]+rect["w"], rect["y"]+rect["h"]))
+      elif args.voc_format:
+        pascal_writer.addBndBox(float(rect["x"]+1),
+                                float(rect["y"]+1),
+                                float(rect["x"]+rect["w"]),
+                                float(rect["y"]+rect["h"]),
+                                obj_type,
+                                0)
+
+        pascal_writer.save(os.path.join(output_full_path, annotations_dir_name))
 
       # if do_draw:
         # cv2.imshow("frame", frame)
