@@ -8,6 +8,8 @@ We need this so that we can train a computer to detect objects in image.
 2. Draw a box accurately around an object (covering every part you can see).
 3. Adjust the box to keep it accurate.
 4. After all objects are annotated in image, press 's' key to go to next image.
+5. When the image is too large to see in your browser, please click the 'Scale to fit' button at the bottom right of the page.
+6. When the frame control key('s', 'a') does not work, please click outside of the image then press the control key.
 
 ### Examples of correct and wrong annotations
 
@@ -41,6 +43,30 @@ We need this so that we can train a computer to detect objects in image.
 - Pedestrian
 - Cyclist
 - Motorcyclist
+- Traffic Lights
+
+### Traffic Lights
+- RedLight
+- GreenLight
+- RedLight+GreenArrow
+- OrangeLight
+- RedLight+OrangeLight
+- GreenLight+GreenArrow
+- GreenLight+OrangeLight
+
+<center>
+  <img src="http://i.imgur.com/tMdlITv.jpg"/><br/ >
+</center>
+Even though colors of traffic light are not good to recognize, you **need to label** the traffic light following above bulbs(traffic light rules in datasets).
+
+In case of traffic lights you **shouldn't** annotate only bulbs but whole traffic light without pole.
+
+### Traffic Light Annotation Examples
+<center>
+  <img src="http://i.imgur.com/hfPBBIW.png" /><br/ >
+  <img src="http://i.imgur.com/gjRLznZ.png" /><br/ >
+  <img src="http://i.imgur.com/YrsyYeI.png" />
+</center>
 
 ## Detailed Instructions
 1. We need you to draw an accurate annotation box around each object (defined above) you see in the image.
