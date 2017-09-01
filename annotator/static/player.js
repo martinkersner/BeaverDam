@@ -75,7 +75,8 @@ class Player {
         Promise.all([this.annotationsDataReady(), this.viewReady()]).then(() => {
             for (let annotation of this.annotations) {
                 let rect = this.view.addRect();
-                rect.fill = annotation.fill;
+                rect.fill  = annotation.fill;
+                rect.label = annotation["type"]; // Martin Kersner, 2017/09/01
                 this.initBindAnnotationAndRect(annotation, rect);
             }
 
@@ -223,7 +224,6 @@ class Player {
 
 
     // Draw something
-
     drawOnscreenAnnotations() {
         for (let {annotation, rect} of this.annotationRectBindings) {
             this.drawAnnotationOnRect(annotation, rect);
@@ -420,8 +420,10 @@ class Player {
             time: this.view.video.currentTime,
             bounds: rect.bounds
         }, this.isImageSequence);
+
         this.annotations.push(annotation);
         rect.fill = annotation.fill;
+        rect.label = annotation["type"]; // Martin Kersner, 2017/09/01
         this.initBindAnnotationAndRect(annotation, rect);
     }
 

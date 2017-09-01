@@ -251,3 +251,11 @@ div.imgplay {
     stroke-dasharray: 8, 4;
     stroke-width: 3;
 }
+
+tspan {
+  font-size: 1.5em;
+  stroke-width: 0.5px;
+  stroke-color: white;
+  stroke-opacity: 1;
+  font-weight: bold;
+}

@@ -10,8 +10,8 @@ var RectConstants = {
 
     // Minimum dimensions allowed for box
     MIN_RECT_DIMENSIONS: {
-        width: 10 /* px */,
-        height: 15 /* px */,
+        width:  10 /* px */,
+        height: 10 /* px */,
     },
 
     // Map of dragIntent => cursor
@@ -31,7 +31,8 @@ var RectConstants = {
 
 
 class Rect {
-    constructor({classBaseName, fill}) {
+    //constructor({classBaseName, fill}) {
+    constructor({classBaseName, fill, label}) { // Martin Kersner, 2017/09/01
         // Before annotations are attached, we cache appearance in these "pre-
         // attached" properties
 
@@ -68,11 +69,16 @@ class Rect {
         // Fill color
         this.fill = fill;
 
+        // Label name
+        this.label = label;
+
         // Raphel rect element
         this.$el = null;
 
         // jQuer rect element
         this.el = null;
+
+        this.bb_text = null;
 
         // Raphel paper that this element is attached to
         this.$paper = null;
@@ -109,6 +115,8 @@ class Rect {
         // Actually do the attaching
         this.$el = this.$paper.rect(0, 0, this.$paper.width, this.$paper.height);
         this.el = this.$el.node;
+        this.bb_text = this.$paper.text(0, 0, this.label); // Martin Kersner, 2017/09/01
+
         this.applyPreAttachedAppearance();
         this.setHandlers();
 
@@ -118,6 +126,7 @@ class Rect {
 
     detach() {
         this.$el.remove();
+        this.bb_text.remove(); // Martin Kersner, 2017/09/01
 
         // Trigger event
         $(this).triggerHandler('detach', this.$paper);
@@ -152,20 +161,22 @@ class Rect {
 
         // Attr
         this.$el.attr(this.preAttachedAttrs);
+        this.bb_text.attr(this.preAttachedAttrs); // Martin Kersner, 2017/09/01
         this.preAttachedAttrs = {};
 
         // Z
         if (this.preAttachedZ != null) {
             if (this.preAttachedZ == 'front') {
                 this.$el.toFront();
+                this.bb_text.toFront(); // Martin Kersner, 2017/09/01
             }
             else if (this.preAttachedZ == 'back') {
                 this.$el.toFront();
+                this.bb_text.toFront(); // Martin Kersner, 2017/09/01
             }
             this.preAttachedZ = null;
         }
     }
-
 
     // Actions
 
@@ -194,12 +205,40 @@ class Rect {
         });
     }
 
+    // Martin Kersner, 2017/09/01
+    get label() {
+        return this._label;
+    }
+
+    // Martin Kersner, 2017/09/01
+    set label(label) {
+        this._label = label;
+
+        if (this._label != undefined) {
+          this.bb_text.attr({text: this._label, 'text-anchor': 'start'});
+          this.attr({
+              'label': this._label,
+          });
+        }
+    }
+
     attr(attrs) {
         if (this.$el == null) {
             Object.assign(this.preAttachedAttrs, attrs);
         }
         else {
             this.$el.attr(attrs);
+
+            // Martin Kersner, 2017/09/01
+            if (attrs["fill"] != undefined) {
+              var attrs_tmp = attrs;
+              attrs_tmp["fill"] = '#000000';
+              this.bb_text.attr(attrs_tmp);
+            }
+            else {
+              this.bb_text.attr(attrs);
+            }
+
         }
     }
 
@@ -240,6 +279,10 @@ class Rect {
         }
         else {
             this.$el.attr(Bounds.toAttrs(bounds));
+            var tmp_bounds = $.extend({}, bounds);
+            tmp_bounds["xMin"] += 2;
+            tmp_bounds["yMin"] += 9;
+            this.bb_text.attr(Bounds.toAttrs(tmp_bounds));
         }
 
         this._bounds = bounds;
@@ -288,6 +331,7 @@ class Rect {
         }
         else {
             this.$el.toFront();
+            this.bb_text.toFront(); // Martin Kersner, 2017/09/01
         }
     }
 
@@ -297,6 +341,7 @@ class Rect {
         }
         else {
             this.$el.toBack();
+            this.bb_text.toBack(); // Martin Kersner, 2017/09/01
         }
     }
 
